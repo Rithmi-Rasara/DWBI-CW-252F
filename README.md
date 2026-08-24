@@ -5,7 +5,7 @@ A Python-based data processing and cleaning pipeline for analyzing Sri Lankan G.
 
 ---
 
-## 📌 Features
+##  Features
 
 - **Automated Data Cleaning:** Standardizes mixed data types, missing values, and missing candidate indicators (`Absent`, `-`, empty spaces).
 - **Data Health Check:** Provides column-level metrics including missing count, missing percentage, unique value counts, and data types.
@@ -15,7 +15,7 @@ A Python-based data processing and cleaning pipeline for analyzing Sri Lankan G.
 
 ---
 
-## 📊 Dataset Structure
+##  Dataset Structure
 
 The dataset contains **337,553 rows** and **21 columns**:
 
@@ -51,7 +51,7 @@ This analysis provides a foundational understanding of the academic data and its
 
 ---
 
-## 🛠️ Requirements & Installation
+##  Requirements & Installation
 
 Ensure you have **Python 3.8+** installed along with the following packages:
 
@@ -75,7 +75,7 @@ seaborn>=0.12.0
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ├── 2020_al_data_kaggle_upload_new_old_syllabi.csv   # Raw input dataset
@@ -86,7 +86,7 @@ seaborn>=0.12.0
 
 ---
 
-## 🚀 Usage
+##  Usage
 
 1. Place the dataset CSV file in your working directory (or update the file path in the script).
 2. Run the script:
@@ -105,7 +105,7 @@ python al_analysis.py
 
 ---
 
-## 🔄 ETL Pipeline Overview
+##  ETL Pipeline Overview
 
 **1. Extract**
 Reads the raw CSV file into a pandas DataFrame and previews its structure.
@@ -126,7 +126,7 @@ Reads the raw CSV file into a pandas DataFrame and previews its structure.
 
 ---
 
-## 📤 Output
+##  Output
 
 - **`final_analytics.csv`** — Average Zscore grouped by academic stream
 - **Inline visualizations** — Bar chart, violin plot, and correlation heatmap (displayed via `plt.show()`; add `plt.savefig()` calls if you want them saved as image files)
