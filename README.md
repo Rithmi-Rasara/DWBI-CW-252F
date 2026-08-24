@@ -35,6 +35,16 @@ The dataset contains **337,553 rows** and **21 columns**:
 
 ---
 
+## Project Overview: Academic Data Analysis
+This project performs an exploratory data analysis (EDA) on a 2020 academic dataset, focusing on student performance (Zscore). It covers the full ETL (Extract, Transform, Load) pipeline, including essential data cleaning steps like handling missing values and type conversions. Key insights are derived through visualizations:
+
+- Zscore Distribution: Understanding the overall spread of academic performance.
+- Gender-based Zscore Comparison: Analyzing performance differences between genders using violin plots.
+- Correlation Heatmap: Identifying relationships between numerical features.
+This analysis provides a foundational understanding of the academic data and its key performance indicators.
+
+---
+
 ## 🛠️ Requirements & Installation
 
 Ensure you have **Python 3.8+** installed along with the following packages:
