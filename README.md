@@ -105,7 +105,7 @@ python al_analysis.py
 
 ---
 
-##  ETL Pipeline Overview
+##  Project Progress
 
 **1. Extract**
 Reads the raw CSV file into a pandas DataFrame and previews its structure.
@@ -133,6 +133,6 @@ Reads the raw CSV file into a pandas DataFrame and previews its structure.
 
 ---
 
-## 📄 License
+##  License
 
 This project is for academic/educational purposes as part of coursework (GAHDSE252F-001).
