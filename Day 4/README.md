@@ -232,14 +232,23 @@ Kaggle Dataset
 Project Files
 
 Day 4/
+
 ├── Morning/
+
 │   ├── Data Set/
+
 │   │   ├── customers.csv
+
 │   │   ├── products.csv
+
 │   │   └── sales.csv
+
 │   ├── Day_4_Multiple_ETL_Pipeline.ipynb
+
 │   ├── ETL_PROGRESS_REPORT_.pdf
+
 │   └── The project currently includes ETL.txt
+
 └── README.md
 
 Main Notebook
