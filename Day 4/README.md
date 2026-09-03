@@ -1,95 +1,14 @@
-📊 Day 4 – Sales Data ETL Pipeline
+Day 4 – Sales ETL Pipeline
 
-📌 Overview
+Overview
 
-This folder contains the Day 4 ETL and Data Warehousing work completed using the Kaggle Sales Dataset.
+This project focuses on building an ETL pipeline using the Kaggle Sales Dataset.
 
-The project demonstrates how raw sales data can be transformed into structured, analytics-ready data through:
+The work is implemented in Google Colab using Python, Pandas and NumPy.
 
-Extract → Transform → Data Quality → Integration → Data Warehousing → Analytics → Visualization → Load → Validation
+Dataset
 
-The main implementation is provided in the Google Colab/Jupyter notebook:
-
-Day_4_Multiple_ETL_Pipeline.ipynb
-
-📂 Project Contents
-
-Morning/
-│
-├── Data Set/
-│   ├── customers.csv
-│   ├── products.csv
-│   └── sales.csv
-│
-├── Day_4_Multiple_ETL_Pipeline.ipynb
-├── ETL_PROGRESS_REPORT_.pdf
-└── The project currently includes ETL.txt
-
-🎯 Project Objectives
-
-The main objectives of this ETL pipeline are to:
-
-Extract sales, customer, and product data.
-
-Profile and identify data-quality issues.
-
-Clean and standardize the source data.
-
-Handle missing and invalid values appropriately.
-
-Integrate related datasets using business keys.
-
-Build a dimensional data-warehouse structure.
-
-Create analytical sales measures.
-
-Validate the transformed data.
-
-Prepare the data for business analysis and visualization.
-
-🔄 ETL Pipeline
-
-                 RAW DATA
-                    │
-                    ▼
-              1. EXTRACT
-                    │
-                    ▼
-         2. DATA PROFILING
-                    │
-                    ▼
-            3. TRANSFORM
-                    │
-                    ▼
-           4. DATA QUALITY
-                    │
-                    ▼
-          5. DATA INTEGRATION
-                    │
-                    ▼
-       6. DATA WAREHOUSE MODEL
-                    │
-          ┌─────────┴─────────┐
-          │                   │
-          ▼                   ▼
-     DIMENSIONS           FACT TABLE
-          │                   │
-          └─────────┬─────────┘
-                    ▼
-             7. ANALYTICS
-                    │
-                    ▼
-           8. VISUALIZATION
-                    │
-                    ▼
-               9. LOAD
-                    │
-                    ▼
-              10. VALIDATE
-
-1️⃣ Extract
-
-The ETL process begins with the source CSV datasets:
+The project uses:
 
 sales.csv
 
@@ -97,33 +16,41 @@ customers.csv
 
 products.csv
 
-The raw data is kept separate from transformed data so that the original source is not directly modified.
+ETL Process
 
-2️⃣ Data Profiling & Quality
+Step 1 – Extract
 
-The sales data is inspected before transformation.
+The source sales data is loaded and kept separately from the transformed data.
 
-The pipeline checks:
+Step 2 – Transform
+
+The sales data is transformed by:
+
+Standardizing column names to snake_case
+
+Converting OrderDate to datetime
+
+Converting Quantity to numeric
+
+Preparing sales measures such as unit_price, sales_amount and total_price
+
+Removing the redundant salesamount column
+
+Step 3 – Data Quality
+
+The transformed sales data is checked for:
 
 Missing values
 
-Duplicate records
-
-Duplicate order IDs
+Duplicate order_id values
 
 Key cardinality
 
 Data types
 
-Critical identifiers
+Current results:
 
-Numeric fields
-
-Date fields
-
-Current sales-data findings
-
-Metric
+Check
 
 Result
 
@@ -147,259 +74,33 @@ Duplicate Order IDs
 
 0
 
-3️⃣ Transformation
+Step 4 – Missing Unit Price Decision
 
-3.1 Column Standardization
+UnitPrice is missing for all 1,000 sales records in the source sales data.
 
-The source column names are standardized to snake_case.
-
-Examples:
-
-Source Column
-
-Transformed Column
-
-OrderID
-
-order_id
-
-OrderDate
-
-order_date
-
-CustomerID
-
-customer_id
-
-ProductID
-
-product_id
-
-Quantity
-
-quantity
-
-UnitPrice
-
-unit_price
-
-This creates consistent naming across the ETL pipeline.
-
-3.2 Data Type Transformation
-
-The pipeline converts:
-
-order_date → datetime
-
-quantity → numeric
-
-unit_price → numeric
-
-sales_amount → numeric
-
-total_price → numeric
-
-Invalid dates or invalid numeric values are handled using controlled conversion rather than silently producing incorrect data.
-
-3.3 Missing Unit Price Decision
-
-An important issue was identified in the source sales data:
-
-UnitPrice is missing for all 1,000 sales records.
-
-Instead of deleting all sales transactions, the pipeline keeps the valid transaction records.
-
-The transformation decision is:
-
-sales.csv
-    │
-    ├── order_id       ✓
-    ├── order_date     ✓
-    ├── customer_id    ✓
-    ├── product_id     ✓
-    ├── quantity       ✓
-    └── unit_price     ✗
-                         │
-                         ▼
-                 Enrich from products
+Instead of removing the sales records, the pipeline keeps them because the product data can be used later to provide the corresponding price.
 
 Therefore:
 
-unit_price is temporarily missing during the initial sales transformation.
-
-sales_amount is calculated after price enrichment.
-
-total_price is calculated after price enrichment.
-
-Valid sales transactions are preserved.
-
-3.4 Redundant Field Handling
-
-A redundant salesamount field was identified and removed to avoid conflicting representations of the sales measure.
-
-4️⃣ Data Quality Results
-
-After the corrected sales transformation:
-
-Check
-
-Result
-
-Extracted rows
-
-1,000
-
-Transformed rows
-
-1,000
-
-Rejected rows
-
-0
-
-Missing unit_price
-
-1,000
-
-Missing sales_amount
-
-1,000
-
-Missing total_price
-
-1,000
-
-The financial missing values are considered an intermediate ETL condition, because the product dataset is intended to provide the required price during integration.
-
-5️⃣ Data Integration
-
-The ETL pipeline integrates the related datasets using their business keys.
-
-Main relationships
-
-sales ───────► customers
-   │
-   └──────────► products
-   │
-   └──────────► date dimension
-
-Product integration
-
-The product data is used to enrich the missing sales price.
-
-Conceptually:
-
 sales.product_id
-       │
-       ▼
+       ↓
 products.product_id
-       │
-       ▼
-products.price
-       │
-       ▼
-sales.unit_price
-       │
-       ▼
-quantity × unit_price
-       │
-       ▼
-sales_amount
-
-Before joining, key uniqueness and unmatched records are checked to avoid unexpected row multiplication.
-
-6️⃣ Data Warehousing
-
-The project follows a Star Schema design.
-
-                    ┌─────────────────┐
-                    │   dim_date      │
-                    └────────┬────────┘
-                             │
-                             │
-┌─────────────────┐     ┌────▼───────┐     ┌─────────────────┐
-│  dim_customer   │────►│ fact_sales │◄────│   dim_product   │
-└─────────────────┘     └────────────┘     └─────────────────┘
-
-6.1 Fact Table – fact_sales
-
-The fact table represents sales transactions and contains measurable business information.
-
-Main fields include:
-
-order_id
-
-customer_key
-
-product_key
-
-date_key
-
-quantity
-
+       ↓
+product price
+       ↓
 unit_price
-
+       ↓
+quantity × unit_price
+       ↓
 sales_amount
 
-total_price
+This decision prevents unnecessary loss of valid transaction records.
 
-The fact table uses foreign keys to connect sales transactions to the dimensions.
+Step 5 – Date Dimension
 
-6.2 Customer Dimension – dim_customer
+A dim_date table is created for time-based analysis.
 
-The customer dimension stores customer-related descriptive information.
-
-It uses:
-
-customer_id → source/business key
-
-customer_key → warehouse surrogate key
-
-The surrogate key is used for warehouse relationships.
-
-6.3 Product Dimension – dim_product
-
-The product dimension stores product-related descriptive information.
-
-It uses:
-
-product_id → source/business key
-
-product_key → warehouse surrogate key
-
-The product dimension is also important for resolving the missing unit price in the original sales data.
-
-6.4 Date Dimension – dim_date
-
-The date dimension provides reusable calendar attributes for time-based analysis.
-
-The current date dimension contains:
-
-Attribute
-
-Value
-
-Rows
-
-609
-
-Columns
-
-12
-
-Primary Key
-
-date_id
-
-Date Start
-
-2023-01-01
-
-Date End
-
-2025-06-28
-
-Main date attributes include:
+It includes:
 
 date_id
 
@@ -427,255 +128,122 @@ is_holiday
 
 season
 
-7️⃣ Analytics
+Current result:
 
-The final analytics stage prepares the data for business reporting.
+Item
 
-The notebook prepares analysis such as:
+Value
 
-Total Sales
+Rows
 
-Total Quantity
+609
 
-Total Orders
+Columns
 
-Unique Customers
+12
 
-Unique Products
+Primary Key
 
-Average Order Value
+date_id
 
-Sales by Product
+Date Range
 
-Sales by Customer
+2023-01-01 to 2025-06-28
 
-Monthly Sales
+Status
 
-Yearly Sales
+SUCCESS
 
-Top Products
+Data Warehousing Design
 
-Top Customers
+The project follows a Star Schema approach:
 
-Time-related analytical fields include:
+               dim_date
+                   |
+                   |
+dim_customer — fact_sales — dim_product
 
-sales_year
+Fact Table
 
-sales_month
+fact_sales
 
-sales_quarter
+Main fields:
 
-order_total
+order_id
 
-8️⃣ Visualization
+customer_key
 
-The pipeline supports visual analysis through charts such as:
+product_key
 
-📈 Monthly Sales Trend
+date_key
 
-Shows changes in sales over time.
+quantity
 
-🏆 Top 10 Products
+unit_price
 
-Identifies products contributing the highest sales.
+sales_amount
 
-👥 Top 10 Customers
+total_price
 
-Identifies customers with the highest sales contribution.
+Dimension Tables
 
-📊 Sales Distribution
+dim_customer
 
-Shows the distribution of transaction sales amounts.
+Stores customer-related information and uses customer_key.
 
-📦 Quantity Distribution
+dim_product
 
-Shows the distribution of quantities sold.
+Stores product-related information and uses product_key.
 
-9️⃣ Load
+dim_date
 
-The processed outputs are designed to be stored in:
-
-/content/etl_output/
-
-Expected output datasets include:
-
-cleaned_sales.csv
-cleaned_customers.csv
-cleaned_products.csv
-dim_customer.csv
-dim_product.csv
-dim_date.csv
-fact_sales.csv
-final_sales_analytics.csv
-
-Validation/report files can also be generated as part of the ETL process.
-
-🔟 Validation
-
-The final validation stage checks:
-
-Sales row counts
-
-Fact-table row counts
-
-Customer foreign keys
-
-Product foreign keys
-
-Date foreign keys
-
-Missing sales amounts
-
-Overall ETL consistency
-
-The objective is to make sure transformations and integrations do not create unexpected data loss or duplication.
-
-🧠 Key Transformation & Warehouse Decisions
+Stores calendar and time-related information and uses date_id.
 
 Transformation Decisions
 
-Standardize source fields to snake_case.
+Valid sales records are retained even when UnitPrice is missing.
 
-Convert dates to datetime.
+Missing price values are intended to be enriched from the product dataset.
 
-Convert quantity and measure fields to numeric types.
+sales_amount is calculated using quantity and unit price after enrichment.
 
-Preserve valid sales transactions when UnitPrice is missing.
+Source columns are standardized to consistent names.
 
-Enrich missing price values from the product dataset.
+Critical transaction fields are validated before records are rejected.
 
-Calculate sales_amount only after obtaining a valid price.
+A separate date dimension is used for time-based analysis.
 
-Remove redundant/conflicting sales fields.
+Surrogate keys are used for warehouse dimensions.
 
-Validate business keys before joins.
+Technologies
 
-Data-Warehouse Decisions
+Python
 
-Use a Star Schema.
+Pandas
 
-Use fact_sales as the central fact table.
+NumPy
 
-Use dim_customer for customer attributes.
+Google Colab
 
-Use dim_product for product attributes.
+Jupyter Notebook
 
-Use dim_date for time-based analysis.
+Kaggle Dataset
 
-Use surrogate keys for warehouse dimensions.
-
-Keep business/source IDs for traceability.
-
-Avoid unnecessary descriptive duplication in the fact table.
-
-🛠️ Technologies Used
-
-🐍 Python
-
-🐼 Pandas
-
-🔢 NumPy
-
-📊 Matplotlib
-
-☁️ Google Colab
-
-📓 Jupyter Notebook
-
-📦 Kaggle Dataset
-
-🗂️ Git & GitHub
-
-📁 Repository Structure
+Project Files
 
 Day 4/
-│
 ├── Morning/
 │   ├── Data Set/
 │   │   ├── customers.csv
 │   │   ├── products.csv
 │   │   └── sales.csv
-│   │
 │   ├── Day_4_Multiple_ETL_Pipeline.ipynb
 │   ├── ETL_PROGRESS_REPORT_.pdf
 │   └── The project currently includes ETL.txt
-│
 └── README.md
 
-🚀 How to Run
+Main Notebook
 
-Open Day_4_Multiple_ETL_Pipeline.ipynb in Google Colab.
+Morning/Day_4_Multiple_ETL_Pipeline.ipynb
 
-Upload or provide the required CSV datasets.
-
-Run the notebook cells in sequential order.
-
-Review the data-quality reports.
-
-Execute the transformation and integration stages.
-
-Review the Star Schema outputs.
-
-Run analytics and visualizations.
-
-Review the final validation results.
-
-Check the generated ETL outputs.
-
-📌 Current Project Status
-
-Completed / Implemented
-
-✅ Sales data transformation
-
-✅ Column standardization
-
-✅ Date conversion
-
-✅ Numeric conversion
-
-✅ Data-quality profiling
-
-✅ Duplicate Order ID validation
-
-✅ Cardinality analysis
-
-✅ Date dimension creation
-
-✅ Star Schema design
-
-✅ Product price enrichment logic
-
-✅ Customer integration logic
-
-✅ Date integration logic
-
-✅ Fact-table construction logic
-
-✅ Analytics logic
-
-✅ Visualization logic
-
-✅ Load/export logic
-
-✅ Validation logic
-
-Notes
-
-The pipeline was designed to handle the missing UnitPrice issue without discarding the 1,000 valid sales transactions. The price is intended to be obtained through the related product data during integration.
-
-📚 Documentation
-
-Detailed ETL decisions and project progress are documented in:
-
-ETL_PROGRESS_REPORT_.pdf
-
-The main implementation and executable workflow are documented in:
-
-Day_4_Multiple_ETL_Pipeline.ipynb
-
-👨‍💻 Project
-
-Sales Data ETL & Data Warehousing – Day 4
-
-This project is developed as a practical Data Engineering / Data Warehousing exercise demonstrating ETL pipeline design, data-quality handling, dimensional modelling, analytics preparation, and GitHub-based project organization.
+The notebook contains the ETL implementation, data-quality checks, transformation logic and date-dimension modelling completed for Day 4.
