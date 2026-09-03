@@ -1,142 +1,681 @@
-<<<<<<< HEAD
-"# Day 4 Notes" 
-=======
-# GAHDSE252F-001
-# Sri Lankan A/L Examination Results Analysis
+📊 Day 4 – Sales Data ETL Pipeline
 
-A Python-based data processing and cleaning pipeline for analyzing Sri Lankan G.C.E. Advanced Level (A/L) examination results dataset containing over 337,000 candidate records.
+📌 Overview
 
----
+This folder contains the Day 4 ETL and Data Warehousing work completed using the Kaggle Sales Dataset.
 
-##  Features
+The project demonstrates how raw sales data can be transformed into structured, analytics-ready data through:
 
-- **Automated Data Cleaning:** Standardizes mixed data types, missing values, and missing candidate indicators (`Absent`, `-`, empty spaces).
-- **Data Health Check:** Provides column-level metrics including missing count, missing percentage, unique value counts, and data types.
-- **Rank & Z-Score Processing:** Safely casts exam metrics (`Zscore`, `district_rank`, `island_rank`) into numeric formats for accurate statistical analysis.
-- **Stream-wise Aggregation:** Groups candidates by academic stream and summarizes average Z-Score performance.
-- **Data Visualization:** Generates bar charts, distribution plots, and comparison visuals to communicate insights clearly.
+Extract → Transform → Data Quality → Integration → Data Warehousing → Analytics → Visualization → Load → Validation
 
----
+The main implementation is provided in the Google Colab/Jupyter notebook:
 
-##  Dataset Structure
+Day_4_Multiple_ETL_Pipeline.ipynb
 
-The dataset contains **337,553 rows** and **21 columns**:
+📂 Project Contents
 
-| Column Name | Description | Data Type |
-| :--- | :--- | :--- |
-| `index` | Unique record identifier | `int64` |
-| `stream` | Academic Stream (Bio, Maths, Commerce, Arts, Tech, etc.) | `object` |
-| `Zscore` | Calculated Z-Score value | `float64` |
-| `district_rank` | Candidate's District Rank | `float64` |
-| `island_rank` | Candidate's Island Rank | `float64` |
-| `al_year` | G.C.E. A/L Examination Year | `int64` |
-| `sub1`, `sub2`, `sub3` | Subjects taken by the candidate | `object` |
-| `sub1_r`, `sub2_r`, `sub3_r` | Subject Grade/Result obtained | `object` |
-| `cgt_r` | Common General Test Result | `object` |
-| `ge_r` | General English Result | `object` |
-| `syllabus` | Syllabus type (New / Old) | `object` |
-| `birth_day`, `birth_month` | Candidate demographic info | `object` |
+Morning/
+│
+├── Data Set/
+│   ├── customers.csv
+│   ├── products.csv
+│   └── sales.csv
+│
+├── Day_4_Multiple_ETL_Pipeline.ipynb
+├── ETL_PROGRESS_REPORT_.pdf
+└── The project currently includes ETL.txt
 
----
+🎯 Project Objectives
 
-## Project Overview: Academic Data Analysis
+The main objectives of this ETL pipeline are to:
 
-This project performs an exploratory data analysis (EDA) on a 2020 academic dataset, focusing on student performance (Zscore). It covers the full ETL (Extract, Transform, Load) pipeline, including essential data cleaning steps like handling missing values and type conversions.
+Extract sales, customer, and product data.
 
-Key insights are derived through visualizations:
+Profile and identify data-quality issues.
 
-- **Zscore Distribution:** Understanding the overall spread of academic performance.
-- **Gender-based Zscore Comparison:** Analyzing performance differences between genders using violin plots.
-- **Correlation Heatmap:** Identifying relationships between numerical features.
-- **Stream-wise Average Zscore:** Comparing average performance across academic streams (Bio, Maths, Commerce, Arts, Tech).
+Clean and standardize the source data.
 
-This analysis provides a foundational understanding of the academic data and its key performance indicators.
+Handle missing and invalid values appropriately.
 
----
+Integrate related datasets using business keys.
 
-##  Requirements & Installation
+Build a dimensional data-warehouse structure.
 
-Ensure you have **Python 3.8+** installed along with the following packages:
+Create analytical sales measures.
 
-```bash
-pip install pandas numpy matplotlib seaborn
-```
+Validate the transformed data.
 
-Or install everything at once using a requirements file:
+Prepare the data for business analysis and visualization.
 
-```bash
-pip install -r requirements.txt
-```
+🔄 ETL Pipeline
 
-**requirements.txt**
-```
-pandas>=1.5.0
-numpy>=1.23.0
-matplotlib>=3.6.0
-seaborn>=0.12.0
-```
+                 RAW DATA
+                    │
+                    ▼
+              1. EXTRACT
+                    │
+                    ▼
+         2. DATA PROFILING
+                    │
+                    ▼
+            3. TRANSFORM
+                    │
+                    ▼
+           4. DATA QUALITY
+                    │
+                    ▼
+          5. DATA INTEGRATION
+                    │
+                    ▼
+       6. DATA WAREHOUSE MODEL
+                    │
+          ┌─────────┴─────────┐
+          │                   │
+          ▼                   ▼
+     DIMENSIONS           FACT TABLE
+          │                   │
+          └─────────┬─────────┘
+                    ▼
+             7. ANALYTICS
+                    │
+                    ▼
+           8. VISUALIZATION
+                    │
+                    ▼
+               9. LOAD
+                    │
+                    ▼
+              10. VALIDATE
 
----
+1️⃣ Extract
 
-##  Project Structure
+The ETL process begins with the source CSV datasets:
 
-```
-├── 2020_al_data_kaggle_upload_new_old_syllabi.csv   # Raw input dataset
-├── al_analysis.py                                    # Main ETL + analysis script
-├── final_analytics.csv                                # Processed output (stream-wise avg Zscore)
-└── README.md                                          # Project documentation
-```
+sales.csv
 
----
+customers.csv
 
-##  Usage
+products.csv
 
-1. Place the dataset CSV file in your working directory (or update the file path in the script).
-2. Run the script:
+The raw data is kept separate from transformed data so that the original source is not directly modified.
 
-```bash
-python al_analysis.py
-```
+2️⃣ Data Profiling & Quality
 
-3. The script will:
-   - Load and preview the dataset
-   - Clean missing values and standardize data types
-   - Convert `Zscore`, `district_rank`, and `island_rank` to numeric
-   - Group data by `stream` and compute average `Zscore`
-   - Export the summarized results to `final_analytics.csv`
-   - Display a bar chart of average Zscore by stream
+The sales data is inspected before transformation.
 
----
+The pipeline checks:
 
-##  Project Progress
+Missing values
 
-**1. Extract**
-Reads the raw CSV file into a pandas DataFrame and previews its structure.
+Duplicate records
 
-**2. Transform**
-- Removes rows with missing values.
-- Converts `Zscore` to numeric, coercing invalid entries to `NaN`.
-- Prepares clean, analysis-ready data grouped by academic stream.
+Duplicate order IDs
 
-**3. Load / Analytics**
-- Aggregates average `Zscore` per stream.
-- Exports the summary table to `final_analytics.csv`.
+Key cardinality
 
-**4. Visualization**
-- Bar chart: Average Zscore by Stream
-- Violin plot: Gender-based Zscore comparison
-- Heatmap: Correlation between numerical features
+Data types
 
----
+Critical identifiers
 
-##  Output
+Numeric fields
 
-- **`final_analytics.csv`** — Average Zscore grouped by academic stream
-- **Inline visualizations** — Bar chart, violin plot, and correlation heatmap (displayed via `plt.show()`; add `plt.savefig()` calls if you want them saved as image files)
+Date fields
 
----
+Current sales-data findings
 
-##  License
+Metric
 
-This project is for academic/educational purposes as part of coursework (GAHDSE252F-001).
->>>>>>> cc6b4f8f480b06c4144b6d99c50f3f3aac8a2724
+Result
+
+Sales records
+
+1,000
+
+Unique Order IDs
+
+1,000
+
+Unique Customer IDs
+
+638
+
+Unique Product IDs
+
+614
+
+Duplicate Order IDs
+
+0
+
+3️⃣ Transformation
+
+3.1 Column Standardization
+
+The source column names are standardized to snake_case.
+
+Examples:
+
+Source Column
+
+Transformed Column
+
+OrderID
+
+order_id
+
+OrderDate
+
+order_date
+
+CustomerID
+
+customer_id
+
+ProductID
+
+product_id
+
+Quantity
+
+quantity
+
+UnitPrice
+
+unit_price
+
+This creates consistent naming across the ETL pipeline.
+
+3.2 Data Type Transformation
+
+The pipeline converts:
+
+order_date → datetime
+
+quantity → numeric
+
+unit_price → numeric
+
+sales_amount → numeric
+
+total_price → numeric
+
+Invalid dates or invalid numeric values are handled using controlled conversion rather than silently producing incorrect data.
+
+3.3 Missing Unit Price Decision
+
+An important issue was identified in the source sales data:
+
+UnitPrice is missing for all 1,000 sales records.
+
+Instead of deleting all sales transactions, the pipeline keeps the valid transaction records.
+
+The transformation decision is:
+
+sales.csv
+    │
+    ├── order_id       ✓
+    ├── order_date     ✓
+    ├── customer_id    ✓
+    ├── product_id     ✓
+    ├── quantity       ✓
+    └── unit_price     ✗
+                         │
+                         ▼
+                 Enrich from products
+
+Therefore:
+
+unit_price is temporarily missing during the initial sales transformation.
+
+sales_amount is calculated after price enrichment.
+
+total_price is calculated after price enrichment.
+
+Valid sales transactions are preserved.
+
+3.4 Redundant Field Handling
+
+A redundant salesamount field was identified and removed to avoid conflicting representations of the sales measure.
+
+4️⃣ Data Quality Results
+
+After the corrected sales transformation:
+
+Check
+
+Result
+
+Extracted rows
+
+1,000
+
+Transformed rows
+
+1,000
+
+Rejected rows
+
+0
+
+Missing unit_price
+
+1,000
+
+Missing sales_amount
+
+1,000
+
+Missing total_price
+
+1,000
+
+The financial missing values are considered an intermediate ETL condition, because the product dataset is intended to provide the required price during integration.
+
+5️⃣ Data Integration
+
+The ETL pipeline integrates the related datasets using their business keys.
+
+Main relationships
+
+sales ───────► customers
+   │
+   └──────────► products
+   │
+   └──────────► date dimension
+
+Product integration
+
+The product data is used to enrich the missing sales price.
+
+Conceptually:
+
+sales.product_id
+       │
+       ▼
+products.product_id
+       │
+       ▼
+products.price
+       │
+       ▼
+sales.unit_price
+       │
+       ▼
+quantity × unit_price
+       │
+       ▼
+sales_amount
+
+Before joining, key uniqueness and unmatched records are checked to avoid unexpected row multiplication.
+
+6️⃣ Data Warehousing
+
+The project follows a Star Schema design.
+
+                    ┌─────────────────┐
+                    │   dim_date      │
+                    └────────┬────────┘
+                             │
+                             │
+┌─────────────────┐     ┌────▼───────┐     ┌─────────────────┐
+│  dim_customer   │────►│ fact_sales │◄────│   dim_product   │
+└─────────────────┘     └────────────┘     └─────────────────┘
+
+6.1 Fact Table – fact_sales
+
+The fact table represents sales transactions and contains measurable business information.
+
+Main fields include:
+
+order_id
+
+customer_key
+
+product_key
+
+date_key
+
+quantity
+
+unit_price
+
+sales_amount
+
+total_price
+
+The fact table uses foreign keys to connect sales transactions to the dimensions.
+
+6.2 Customer Dimension – dim_customer
+
+The customer dimension stores customer-related descriptive information.
+
+It uses:
+
+customer_id → source/business key
+
+customer_key → warehouse surrogate key
+
+The surrogate key is used for warehouse relationships.
+
+6.3 Product Dimension – dim_product
+
+The product dimension stores product-related descriptive information.
+
+It uses:
+
+product_id → source/business key
+
+product_key → warehouse surrogate key
+
+The product dimension is also important for resolving the missing unit price in the original sales data.
+
+6.4 Date Dimension – dim_date
+
+The date dimension provides reusable calendar attributes for time-based analysis.
+
+The current date dimension contains:
+
+Attribute
+
+Value
+
+Rows
+
+609
+
+Columns
+
+12
+
+Primary Key
+
+date_id
+
+Date Start
+
+2023-01-01
+
+Date End
+
+2025-06-28
+
+Main date attributes include:
+
+date_id
+
+full_date
+
+day_of_week
+
+day_of_month
+
+day_of_year
+
+week_of_year
+
+month
+
+month_num
+
+quarter
+
+year
+
+is_weekend
+
+is_holiday
+
+season
+
+7️⃣ Analytics
+
+The final analytics stage prepares the data for business reporting.
+
+The notebook prepares analysis such as:
+
+Total Sales
+
+Total Quantity
+
+Total Orders
+
+Unique Customers
+
+Unique Products
+
+Average Order Value
+
+Sales by Product
+
+Sales by Customer
+
+Monthly Sales
+
+Yearly Sales
+
+Top Products
+
+Top Customers
+
+Time-related analytical fields include:
+
+sales_year
+
+sales_month
+
+sales_quarter
+
+order_total
+
+8️⃣ Visualization
+
+The pipeline supports visual analysis through charts such as:
+
+📈 Monthly Sales Trend
+
+Shows changes in sales over time.
+
+🏆 Top 10 Products
+
+Identifies products contributing the highest sales.
+
+👥 Top 10 Customers
+
+Identifies customers with the highest sales contribution.
+
+📊 Sales Distribution
+
+Shows the distribution of transaction sales amounts.
+
+📦 Quantity Distribution
+
+Shows the distribution of quantities sold.
+
+9️⃣ Load
+
+The processed outputs are designed to be stored in:
+
+/content/etl_output/
+
+Expected output datasets include:
+
+cleaned_sales.csv
+cleaned_customers.csv
+cleaned_products.csv
+dim_customer.csv
+dim_product.csv
+dim_date.csv
+fact_sales.csv
+final_sales_analytics.csv
+
+Validation/report files can also be generated as part of the ETL process.
+
+🔟 Validation
+
+The final validation stage checks:
+
+Sales row counts
+
+Fact-table row counts
+
+Customer foreign keys
+
+Product foreign keys
+
+Date foreign keys
+
+Missing sales amounts
+
+Overall ETL consistency
+
+The objective is to make sure transformations and integrations do not create unexpected data loss or duplication.
+
+🧠 Key Transformation & Warehouse Decisions
+
+Transformation Decisions
+
+Standardize source fields to snake_case.
+
+Convert dates to datetime.
+
+Convert quantity and measure fields to numeric types.
+
+Preserve valid sales transactions when UnitPrice is missing.
+
+Enrich missing price values from the product dataset.
+
+Calculate sales_amount only after obtaining a valid price.
+
+Remove redundant/conflicting sales fields.
+
+Validate business keys before joins.
+
+Data-Warehouse Decisions
+
+Use a Star Schema.
+
+Use fact_sales as the central fact table.
+
+Use dim_customer for customer attributes.
+
+Use dim_product for product attributes.
+
+Use dim_date for time-based analysis.
+
+Use surrogate keys for warehouse dimensions.
+
+Keep business/source IDs for traceability.
+
+Avoid unnecessary descriptive duplication in the fact table.
+
+🛠️ Technologies Used
+
+🐍 Python
+
+🐼 Pandas
+
+🔢 NumPy
+
+📊 Matplotlib
+
+☁️ Google Colab
+
+📓 Jupyter Notebook
+
+📦 Kaggle Dataset
+
+🗂️ Git & GitHub
+
+📁 Repository Structure
+
+Day 4/
+│
+├── Morning/
+│   ├── Data Set/
+│   │   ├── customers.csv
+│   │   ├── products.csv
+│   │   └── sales.csv
+│   │
+│   ├── Day_4_Multiple_ETL_Pipeline.ipynb
+│   ├── ETL_PROGRESS_REPORT_.pdf
+│   └── The project currently includes ETL.txt
+│
+└── README.md
+
+🚀 How to Run
+
+Open Day_4_Multiple_ETL_Pipeline.ipynb in Google Colab.
+
+Upload or provide the required CSV datasets.
+
+Run the notebook cells in sequential order.
+
+Review the data-quality reports.
+
+Execute the transformation and integration stages.
+
+Review the Star Schema outputs.
+
+Run analytics and visualizations.
+
+Review the final validation results.
+
+Check the generated ETL outputs.
+
+📌 Current Project Status
+
+Completed / Implemented
+
+✅ Sales data transformation
+
+✅ Column standardization
+
+✅ Date conversion
+
+✅ Numeric conversion
+
+✅ Data-quality profiling
+
+✅ Duplicate Order ID validation
+
+✅ Cardinality analysis
+
+✅ Date dimension creation
+
+✅ Star Schema design
+
+✅ Product price enrichment logic
+
+✅ Customer integration logic
+
+✅ Date integration logic
+
+✅ Fact-table construction logic
+
+✅ Analytics logic
+
+✅ Visualization logic
+
+✅ Load/export logic
+
+✅ Validation logic
+
+Notes
+
+The pipeline was designed to handle the missing UnitPrice issue without discarding the 1,000 valid sales transactions. The price is intended to be obtained through the related product data during integration.
+
+📚 Documentation
+
+Detailed ETL decisions and project progress are documented in:
+
+ETL_PROGRESS_REPORT_.pdf
+
+The main implementation and executable workflow are documented in:
+
+Day_4_Multiple_ETL_Pipeline.ipynb
+
+👨‍💻 Project
+
+Sales Data ETL & Data Warehousing – Day 4
+
+This project is developed as a practical Data Engineering / Data Warehousing exercise demonstrating ETL pipeline design, data-quality handling, dimensional modelling, analytics preparation, and GitHub-based project organization.
