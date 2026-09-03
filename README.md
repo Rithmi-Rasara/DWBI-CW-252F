@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+"# Day 4 Notes" 
+=======
 # GAHDSE252F-001
 # Sri Lankan A/L Examination Results Analysis
 
@@ -136,3 +139,4 @@ Reads the raw CSV file into a pandas DataFrame and previews its structure.
 ##  License
 
 This project is for academic/educational purposes as part of coursework (GAHDSE252F-001).
+>>>>>>> cc6b4f8f480b06c4144b6d99c50f3f3aac8a2724
