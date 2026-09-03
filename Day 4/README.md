@@ -46,13 +46,18 @@ Instead of removing valid sales records, the pipeline keeps the records and plan
 
 
 sales.product_id
+
        ↓
 products.product_id
+
        ↓
 Product Price
+
        ↓
 Unit Price
+
        ↓
 Quantity × Unit Price
+
        ↓
 Sales Amount
