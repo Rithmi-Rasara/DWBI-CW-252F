@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "# Day 4 Notes" 
 =======
 # GAHDSE252F-001
